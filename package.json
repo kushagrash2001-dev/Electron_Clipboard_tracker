@@ -1,0 +1,17 @@
+{
+  "name": "electron",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "electron": "^33.2.1",
+    "resize-image": "^0.1.0",
+    "robotjs": "^0.6.0",
+    "toastify-js": "^1.12.0"
+  }
+}

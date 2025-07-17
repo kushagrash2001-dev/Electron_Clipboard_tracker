@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Clipboard Tracker</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #f5f5f5;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    header {
+      background: #4CAF50;
+      color: white;
+      padding: 15px;
+      text-align: center;
+      font-size: 24px;
+    }
+
+    .controls {
+      padding: 15px;
+      display: flex;
+      gap: 10px;
+      background: #fff;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    #search {
+      flex: 1;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+
+    #clear {
+      padding: 10px 20px;
+      font-size: 16px;
+      background: #f44336;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    #clear:hover {
+      background: #d32f2f;
+    }
+
+    #history {
+      flex: 1;
+      overflow-y: auto;
+      padding: 15px;
+    }
+
+    .item {
+      background: white;
+      padding: 10px;
+      margin-bottom: 8px;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      word-wrap: break-word;
+    }
+
+    .item:hover {
+      background: #e0f7fa;
+    }
+
+    mark {
+      background: yellow;
+      color: black;
+    }
+  </style>
+</head>
+<body>
+
+  <header>Clipboard Tracker</header>
+
+  <div class="controls">
+    <input type="text" id="search" placeholder="Search clipboard history..." />
+    <button id="clear">Clear All</button>
+  </div>
+
+  <div id="history"></div>
+
+  <script>
+    const { ipcRenderer } = require('electron');
+
+    let clipboardData = [];
+
+    function renderHistory(filter = '') {
+      const container = document.getElementById('history');
+      container.innerHTML = '';
+
+      clipboardData
+        .filter(item => item.toLowerCase().includes(filter.toLowerCase()))
+        .forEach(item => {
+          const div = document.createElement('div');
+          div.className = 'item';
+
+          // Highlight matched part
+          if (filter) {
+            const regex = new RegExp(`(${filter})`, 'gi');
+            div.innerHTML = item.replace(regex, '<mark>$1</mark>');
+          } else {
+            div.textContent = item;
+          }
+
+          div.addEventListener('click', () => {
+            ipcRenderer.send('copy-to-clipboard', item);
+          });
+
+          container.appendChild(div);
+        });
+    }
+
+    ipcRenderer.on('clipboard-update', (event, history) => {
+      clipboardData = history;
+      const searchValue = document.getElementById('search').value;
+      renderHistory(searchValue);
+    });
+
+    document.getElementById('search').addEventListener('input', (e) => {
+      renderHistory(e.target.value);
+    });
+
+    document.getElementById('clear').addEventListener('click', () => {
+      ipcRenderer.send('clear-history');
+    });
+  </script>
+
+</body>
+</html>
