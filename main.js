@@ -86,6 +86,9 @@ ipcMain.on('copy-to-clipboard', (event, data) => {
   }
 });
 
+
+
+
 ipcMain.on('clear-history', () => {
   clipboardHistory = [];
   if (win) win.webContents.send('clipboard-update', clipboardHistory);
