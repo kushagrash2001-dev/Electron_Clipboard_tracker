@@ -1,17 +1,42 @@
 {
-  "name": "electron",
+  "name": "clipboard-tracker",
   "version": "1.0.0",
-  "description": "",
+  "description": "A simple clipboard history tracker desktop app built with Electron.",
   "main": "main.js",
+  "author": "Your Name",
+  "license": "MIT",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "build": "electron-builder"
   },
-  "author": "",
-  "license": "ISC",
   "dependencies": {
-    "electron": "^33.2.1",
     "resize-image": "^0.1.0",
-    "robotjs": "^0.6.0",
     "toastify-js": "^1.12.0"
+  },
+  "devDependencies": {
+    "electron": "^33.2.1",
+    "electron-builder": "^26.0.12"
+  },
+  "build": {
+    "appId": "com.clipboard.tracker",
+    "productName": "Clipboard Tracker",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "**/*"
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "icon.ico"
+    },
+    "mac": {
+      "target": "dmg",
+      "icon": "icon.icns"
+    },
+    "linux": {
+      "target": "AppImage",
+      "icon": "icon.png"
+    }
   }
 }
